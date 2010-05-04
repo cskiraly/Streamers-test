@@ -18,13 +18,13 @@ VIDEO=~/video/foreman_cif.mp4
 while getopts "s:S:p:P:N:f:e:v:VX:" opt; do
   case $opt in
     s)
-      SOURCE_OPTION=$OPTARG
+      SOURCE_OPTIONS=$OPTARG
       ;;
     S)
       SOURCE_PORT=$OPTARG
       ;;
     p)
-      PEER_OPTION=$OPTARG
+      PEER_OPTIONS=$OPTARG
       ;;
     P)
       PEER_PORT_BASE=$OPTARG
