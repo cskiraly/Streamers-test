@@ -59,7 +59,7 @@ while getopts "s:S:p:P:n:f:e:v:VX" opt; do
 done
 
 
-((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS))
+((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
   #FIFO=fifo.$PORT
   #rm $FIFO
