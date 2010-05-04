@@ -61,14 +61,16 @@ done
 
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
-  #FIFO=fifo.$PORT
-  #rm $FIFO
-  #mkfifo $FIFO
-  #xterm -e "$STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p 6666 2>$FIFO >/dev/null | grep $FILTER $FIFO" &
 #  valgrind --track-origins=yes  --leak-check=full \ TODO!!!
-  $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+  if [[ $XTERM ]] ; then
+    FIFO=fifo.$PORT
+    rm -f $FIFO
+    mkfifo $FIFO
+    xterm -e "$STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>$FIFO >/dev/null | grep '$FILTER' $FIFO" &
+  else
+    $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+  fi
 done
-
 
 #valgrind --track-origins=yes  --leak-check=full TODO!
 $STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I lo >/dev/null
