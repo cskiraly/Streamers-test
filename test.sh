@@ -3,6 +3,9 @@
 #./test.sh -e "offerstreamer-ml" -n 5 -s "-m 1" -p "-b 40 -o 5 -c 25" -f "chbuf"
 #./test.sh -e "offerstreamer-ml" -f chbuf
 
+# Kill everything we've stared on exit (with trap).
+trap "ps -o pid= --ppid $$ | xargs kill -9 2>/dev/null" 0
+
 #defaults
 SOURCE_PORT=6666
 PEER_PORT_BASE=5555
