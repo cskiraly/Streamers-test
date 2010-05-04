@@ -15,7 +15,7 @@ STREAMER=./offerstreamer-ml
 VIDEO=~/video/foreman_cif.mp4
 
 #process options
-while getopts "s:S:p:P:n:f:e:v:VX" opt; do
+while getopts "s:S:p:P:N:f:e:v:VX:" opt; do
   case $opt in
     s)
       SOURCE_OPTION=$OPTARG
@@ -29,7 +29,7 @@ while getopts "s:S:p:P:n:f:e:v:VX" opt; do
     P)
       PEER_PORT_BASE=$OPTARG
       ;;
-    n)
+    N)
       NUM_PEERS=$OPTARG
       ;;
     f)	#TODO
@@ -44,8 +44,8 @@ while getopts "s:S:p:P:n:f:e:v:VX" opt; do
     V)	#TODO
       VALGRIND=1
       ;;
-    X)	#TODO
-      XTERM=1
+    X)
+      NUM_PEERS_X=$OPTARG
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -61,15 +61,17 @@ done
 
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
+    $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+done
+
+((PEER_PORT_BASE = PEER_PORT_MAX + 1))
+((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_X - 1))
+for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
 #  valgrind --track-origins=yes  --leak-check=full \ TODO!!!
-  if [[ $XTERM ]] ; then
     FIFO=fifo.$PORT
     rm -f $FIFO
     mkfifo $FIFO
     xterm -e "LD_LIBRARY_PATH=$LD_LIBRARY_PATH $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>$FIFO >/dev/null | grep '$FILTER' $FIFO" &
-  else
-    $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
-  fi
 done
 
 #valgrind --track-origins=yes  --leak-check=full TODO!
