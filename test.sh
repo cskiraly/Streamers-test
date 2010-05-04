@@ -66,7 +66,7 @@ for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     FIFO=fifo.$PORT
     rm -f $FIFO
     mkfifo $FIFO
-    xterm -e "$STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>$FIFO >/dev/null | grep '$FILTER' $FIFO" &
+    xterm -e "LD_LIBRARY_PATH=$LD_LIBRARY_PATH $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>$FIFO >/dev/null | grep '$FILTER' $FIFO" &
   else
     $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
   fi
