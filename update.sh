@@ -13,6 +13,7 @@ make -C ml
 cd ..
 cd GRAPES
 git pull -f
+make -C som clean
 make -C som
 cd ..
 git pull -f
