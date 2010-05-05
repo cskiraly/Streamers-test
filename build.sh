@@ -23,5 +23,7 @@ make -C ml
 cd ..
 make -C GRAPES/som
 make -C ffmpeg
+LIBEVENT=`pwd`/Event ML=1  make
+LIBEVENT=`pwd`/Event ML=1 STATIC=1 make
 LIBEVENT=`pwd`/Event ML=1 MONL=1 make
 LIBEVENT=`pwd`/Event ML=1 MONL=1 STATIC=1 make
