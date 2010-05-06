@@ -10,6 +10,6 @@ cd Streamers
 git checkout -b for-demo origin/for-demo
 cp -r ../GRAPES NAPA
 cd NAPA; git checkout -b for-demo-NAPA origin/for-demo-NAPA; cd ..
-cp -r ../GRAPES .
+mv ../GRAPES .
 cd GRAPES; git checkout -b for-demo-GRAPES origin/for-demo-GRAPES; cd ..
 make ffmpeg
