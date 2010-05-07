@@ -8,17 +8,25 @@ trap "ps -o pid= --ppid $$ | xargs kill -9 2>/dev/null" 0
 
 #defaults
 SOURCE_PORT=6666
+IFACE=lo
+SOURCE_IP=127.0.0.1
 PEER_PORT_BASE=5555
 NUM_PEERS=1
 FILTER=""
-STREAMER=./offerstreamer-ml
+STREAMER=../Streamers/offerstreamer-ml-monl
 VIDEO=~/video/foreman_cif.mp4
 
 #process options
-while getopts "s:S:p:P:N:f:e:v:V:X:" opt; do
+while getopts "s:S:p:P:N:f:e:v:V:X:i:I:" opt; do
   case $opt in
+    I)
+      IFACE=$OPTARG
+      ;;
     s)
       SOURCE_OPTIONS=$OPTARG
+      ;;
+    i)
+      SOURCE_IP=$OPTARG
       ;;
     S)
       SOURCE_PORT=$OPTARG
@@ -61,14 +69,14 @@ done
 
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
-    $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_V - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     valgrind --track-origins=yes  --leak-check=full \
-    $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
@@ -78,8 +86,8 @@ for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     FIFO=fifo.$PORT
     rm -f $FIFO
     mkfifo $FIFO
-    xterm -e "LD_LIBRARY_PATH=$LD_LIBRARY_PATH $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>$FIFO >/dev/null | grep '$FILTER' $FIFO" &
+    xterm -e "LD_LIBRARY_PATH=$LD_LIBRARY_PATH $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>$FIFO >/dev/null | grep '$FILTER' $FIFO" &
 done
 
 #valgrind --track-origins=yes  --leak-check=full TODO!
-$STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I lo >/dev/null
+$STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE >/dev/null
