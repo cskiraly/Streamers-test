@@ -1,3 +1,9 @@
+echo "Dependencies, among others: autoconf, flex, libtool, autopoint"
+which flex || { echo "please install flex!"; exit 1; }
+which libtoolize || { echo "please install libtool!"; exit 1; }
+which autoconf || { echo "please install autoconf!"; exit 1; }
+which autopoint || { echo "please install autopoint!"; exit 1; }
+
 cd libevent-2.0.3-alpha
 ./configure --prefix `pwd`/../Streamers/Event
 #./configure --prefix `pwd`/../Streamers/Event --disable-shared
