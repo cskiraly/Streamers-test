@@ -15,7 +15,7 @@ STREAMER=./offerstreamer-ml
 VIDEO=~/video/foreman_cif.mp4
 
 #process options
-while getopts "s:S:p:P:N:f:e:v:VX:" opt; do
+while getopts "s:S:p:P:N:f:e:v:V:X:" opt; do
   case $opt in
     s)
       SOURCE_OPTIONS=$OPTARG
@@ -41,8 +41,8 @@ while getopts "s:S:p:P:N:f:e:v:VX:" opt; do
     v)
       VIDEO=$OPTARG
       ;;
-    V)	#TODO
-      VALGRIND=1
+    V)	#valgrind peers
+      NUM_PEERS_V=$OPTARG
       ;;
     X)
       NUM_PEERS_X=$OPTARG
@@ -61,6 +61,13 @@ done
 
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
+    $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+done
+
+((PEER_PORT_BASE = PEER_PORT_MAX + 1))
+((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_V - 1))
+for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
+    valgrind --track-origins=yes  --leak-check=full \
     $STREAMER $PEER_OPTIONS -I lo -P $PORT -i 127.0.0.1 -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
 done
 
