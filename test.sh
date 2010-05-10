@@ -74,16 +74,9 @@ while getopts "s:S:p:P:N:f:e:v:V:X:i:I:o:O:" opt; do
 done
 
 
-((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
+((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_O - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
-    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
-done
-
-((PEER_PORT_BASE = PEER_PORT_MAX + 1))
-((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_V - 1))
-for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
-    valgrind --track-origins=yes  --leak-check=full \
-    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT | $OUTPUT &
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
@@ -97,10 +90,18 @@ for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
-((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_O - 1))
+((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_V - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
-    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT | $OUTPUT &
+    valgrind --track-origins=yes  --leak-check=full \
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
 done
+
+((PEER_PORT_BASE = PEER_PORT_MAX + 1))
+((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
+for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+done
+
 
 #valgrind --track-origins=yes  --leak-check=full TODO!
 $STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT >/dev/null
