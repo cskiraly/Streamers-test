@@ -15,9 +15,10 @@ NUM_PEERS=1
 FILTER=""
 STREAMER=../Streamers/offerstreamer-ml-monl
 VIDEO=~/video/foreman_cif.mp4
+OUTPUT="ffplay -"
 
 #process options
-while getopts "s:S:p:P:N:f:e:v:V:X:i:I:" opt; do
+while getopts "s:S:p:P:N:f:e:v:V:X:i:I:o:O:" opt; do
   case $opt in
     I)
       IFACE=$OPTARG
@@ -51,6 +52,12 @@ while getopts "s:S:p:P:N:f:e:v:V:X:i:I:" opt; do
       ;;
     V)	#valgrind peers
       NUM_PEERS_V=$OPTARG
+      ;;
+    O)	#output peers
+      NUM_PEERS_O=$OPTARG
+      ;;
+    o)	#output command
+      OUTPUT=$OPTARG
       ;;
     X)
       NUM_PEERS_X=$OPTARG
@@ -87,6 +94,12 @@ for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     rm -f $FIFO
     mkfifo $FIFO
     xterm -e "LD_LIBRARY_PATH=$LD_LIBRARY_PATH $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>$FIFO >/dev/null | grep '$FILTER' $FIFO" &
+done
+
+((PEER_PORT_BASE = PEER_PORT_MAX + 1))
+((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_O - 1))
+for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT | $OUTPUT &
 done
 
 #valgrind --track-origins=yes  --leak-check=full TODO!
