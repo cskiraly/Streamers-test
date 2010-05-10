@@ -7,8 +7,8 @@
 trap "ps -o pid= --ppid $$ | xargs kill -9 2>/dev/null" 0
 
 #defaults
-SOURCE_PORT=6666
 IFACE=lo
+SOURCE_PORT=6666
 SOURCE_IP=127.0.0.1
 PEER_PORT_BASE=5555
 NUM_PEERS=1
@@ -90,4 +90,4 @@ for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
 done
 
 #valgrind --track-origins=yes  --leak-check=full TODO!
-$STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE >/dev/null
+$STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT >/dev/null
