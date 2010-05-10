@@ -103,5 +103,8 @@ for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
 done
 
 
+FIFO=fifo.$SOURCE_PORT
+rm -f $FIFO
+mkfifo $FIFO
 #valgrind --track-origins=yes  --leak-check=full TODO!
-$STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT >/dev/null
+$STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$FILTER" $FIFO
