@@ -18,7 +18,7 @@ VIDEO=~/video/foreman_cif.mp4
 OUTPUT="ffplay -"
 
 #process options
-while getopts "s:S:p:P:N:f:e:v:V:X:i:I:o:O:" opt; do
+while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:" opt; do
   case $opt in
     I)
       IFACE=$OPTARG
@@ -41,7 +41,10 @@ while getopts "s:S:p:P:N:f:e:v:V:X:i:I:o:O:" opt; do
     N)
       NUM_PEERS=$OPTARG
       ;;
-    f)	#TODO
+    f)	# filter output of X peers grepping for the argument
+      FILTER=$OPTARG
+      ;;
+    F)	# filter output of source grepping for the argument
       FILTER=$OPTARG
       ;;
     e)
