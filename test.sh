@@ -65,6 +65,9 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Z" opt; do
     X)	# number of peers showing stderr in an xterm. If -f is specified, it is applied.
       NUM_PEERS_X=$OPTARG
       ;;
+    Z)	# don't start the source. Use this mode to attach these peers to an exisiting source
+      NO_SOURCE=1
+      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
@@ -110,4 +113,8 @@ FIFO=fifo.$SOURCE_PORT
 rm -f $FIFO
 mkfifo $FIFO
 #valgrind --track-origins=yes  --leak-check=full TODO!
-$STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$FILTER" $FIFO
+if [[ $NO_SOURCE ]]; then
+   sleep 366d
+else 
+   $STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$FILTER" $FIFO
+fi
