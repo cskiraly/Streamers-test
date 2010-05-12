@@ -16,9 +16,11 @@ FILTER=""
 STREAMER=offerstreamer-ml-monl
 VIDEO=foreman_cif.mpg
 OUTPUT="fifo | ffplay -"
+CHURN_MIN=100000000
+CHURN_WAIT=10
 
 #process options
-while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Z" opt; do
+while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:" opt; do
   case $opt in
     I)	# the interface to use for all peers and the source, e.g. -I eth1
       IFACE=$OPTARG
@@ -68,6 +70,15 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Z" opt; do
     Z)	# don't start the source. Use this mode to attach these peers to an exisiting source
       NO_SOURCE=1
       ;;
+    t)	# churn: minimum lifetime in seconds of peers (only for N type)
+      CHURN_MIN=$OPTARG
+      ;;
+    T)	# churn: maximum lifetime in seconds of peers (only for N type)
+      CHURN_MAX=$OPTARG
+      ;;
+    w)	# churn: seconds to wait before restarting peer
+      CHURN_WAIT=$OPTARG
+      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
@@ -78,6 +89,32 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Z" opt; do
       ;;
   esac
 done
+
+[[ $CHURN_MAX ]] || CHURN_MAX=$CHURN_MIN
+
+function churn {
+  # Kill everything we've started on exit (with trap).
+  trap "ps -o pid= --ppid $BASHPID | xargs kill 2>/dev/null" 0
+
+  MIN=$1
+  MAX=$2
+  PAUSE=$3
+
+  if [ $MIN -lt $MAX ]; then
+    let "RUN=$MIN+($RANDOM%($MAX-$MIN))"
+  else
+    RUN=$MIN
+  fi
+
+  while [ 1 ] ; do
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+    PID=$!
+    sleep $RUN
+    kill $PID
+    sleep $PAUSE
+  done
+
+}
 
 
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_O - 1))
@@ -105,7 +142,7 @@ done
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
-    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+    churn $CHURN_MIN $CHURN_MAX $CHURN_WAIT &
 done
 
 
