@@ -13,9 +13,9 @@ SOURCE_IP=127.0.0.1
 PEER_PORT_BASE=5555
 NUM_PEERS=1
 FILTER=""
-STREAMER=../Streamers/offerstreamer-ml-monl
-VIDEO=~/video/foreman_cif.mp4
-OUTPUT="ffplay -"
+STREAMER=offerstreamer-ml-monl
+VIDEO=foreman_cif.mpg
+OUTPUT="fifo | ffplay -"
 
 #process options
 while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:" opt; do
