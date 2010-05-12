@@ -18,51 +18,51 @@ VIDEO=foreman_cif.mpg
 OUTPUT="fifo | ffplay -"
 
 #process options
-while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:" opt; do
+while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Z" opt; do
   case $opt in
-    I)
+    I)	# the interface to use for all peers and the source, e.g. -I eth1
       IFACE=$OPTARG
       ;;
-    s)
+    s)	# options to pass to the source, .e.g. -s "-m 3"
       SOURCE_OPTIONS=$OPTARG
       ;;
-    i)
+    i)	# IP address of the source. Might be needed if -I!=lo
       SOURCE_IP=$OPTARG
       ;;
-    S)
+    S)	# the udp port used by the source
       SOURCE_PORT=$OPTARG
       ;;
-    p)
+    p)	# extra options passed to each peer, e.g. -p "-c 50 -b 100"
       PEER_OPTIONS=$OPTARG
       ;;
-    P)
+    P)	# peers use ports starting from this one
       PEER_PORT_BASE=$OPTARG
       ;;
-    N)
+    N)	# number of peers running in background (only stderr is logged). Use -N 0 to disable.
       NUM_PEERS=$OPTARG
       ;;
-    f)	# filter output of X peers grepping for the argument
+    f)	# filter output of X peers grepping for the argument, e.g. -f "chbuf"
       FILTER=$OPTARG
       ;;
-    F)	# filter output of source grepping for the argument
+    F)	# filter output of source grepping for the argument e.g. -F "sending\|received"
       FILTER=$OPTARG
       ;;
-    e)
+    e) # overrride streamer executable, e.g. -e ./offerstreamer-ml-monl
       STREAMER=$OPTARG
       ;;
-    v)
+    v) # override video file, e.g. -v ~/video/big_buck_bunny_480p_600k.mpg
       VIDEO=$OPTARG
       ;;
-    V)	#valgrind peers
+    V)	# number of peers running valgrind
       NUM_PEERS_V=$OPTARG
       ;;
-    O)	#output peers
+    O)	# number of peers showing their ouput (on stdout)
       NUM_PEERS_O=$OPTARG
       ;;
-    o)	#output command
+    o)	# override output program, e.g. -o "fifo | vlc /dev/stdin"
       OUTPUT=$OPTARG
       ;;
-    X)
+    X)	# number of peers showing stderr in an xterm. If -f is specified, it is applied.
       NUM_PEERS_X=$OPTARG
       ;;
     \?)
