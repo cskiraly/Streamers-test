@@ -2,7 +2,7 @@ echo "Dependencies, among others: autoconf, flex, libtool, autopoint"
 which flex || { echo "please install flex!"; exit 1; }
 which libtoolize || { echo "please install libtool!"; exit 1; }
 which autoconf || { echo "please install autoconf!"; exit 1; }
-which autopoint || { echo "please install autopoint!"; exit 1; }
+which autopoint || { echo "please install gettext (or autopoint) !"; exit 1; }
 
 MAKE="make -j 4"
 
