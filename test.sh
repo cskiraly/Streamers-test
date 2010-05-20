@@ -13,6 +13,7 @@ SOURCE_IP=127.0.0.1
 PEER_PORT_BASE=5555
 NUM_PEERS=1
 FILTER=""
+SOURCE_FILTER=""
 STREAMER=offerstreamer-ml-monl
 VIDEO=foreman_cif.mpg
 OUTPUT="fifo | ffplay -"
@@ -47,7 +48,7 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:" opt; do
       FILTER=$OPTARG
       ;;
     F)	# filter output of source grepping for the argument e.g. -F "sending\|received"
-      FILTER=$OPTARG
+      SOURCE_FILTER=$OPTARG
       ;;
     e) # overrride streamer executable, e.g. -e ./offerstreamer-ml-monl
       STREAMER=$OPTARG
@@ -153,5 +154,5 @@ mkfifo $FIFO
 if [[ $NO_SOURCE ]]; then
    sleep 366d
 else 
-   $STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$FILTER" $FIFO
+   $STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$SOURCE_FILTER" $FIFO
 fi
