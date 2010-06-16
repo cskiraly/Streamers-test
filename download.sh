@@ -1,6 +1,7 @@
 git clone http://www.disi.unitn.it/~kiraly/SharedGits/Streamers.git
 git clone http://www.disi.unitn.it/~kiraly/PublicGits/GRAPES.git
 
+# get libevent 2.0.3 (warning: newer version were not tested)
 wget http://www.monkey.org/~provos/libevent-2.0.3-alpha.tar.gz
 tar xvzf libevent-2.0.3-alpha.tar.gz
 
