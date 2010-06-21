@@ -6,36 +6,36 @@ which autopoint || { echo "please install gettext (or autopoint) !"; exit 1; }
 
 MAKE="make -j 4"
 
-cd libevent-2.0.3-alpha
-./configure --prefix `pwd`/../Event
-$MAKE; $MAKE install
+cd libevent-2.0.3-alpha || exit
+./configure --prefix `pwd`/../Event || exit
+$MAKE || exit; $MAKE install || exit
 cd ..
 
-cd confuse-2.7
-./configure --prefix=`pwd`/../Conf
-$MAKE; $MAKE install
+cd confuse-2.7  || exit
+./configure --prefix=`pwd`/../Conf || exit
+$MAKE || exit; $MAKE install || exit
 cd ..
 
-cd OfferStreamer
-cd NAPA
-mkdir -p m4 config
-autoreconf --force -I config -I m4 --install
-./configure --with-libevent2=`pwd`/../../Event  --with-libconfuse=`pwd`/../../Conf
-$MAKE -C common
-$MAKE -C dclog
-$MAKE -C rep
-$MAKE -C monl
-cd ml
-./autogen.sh
-./configure --with-libevent2=`pwd`/../../../Event
-$MAKE
+cd OfferStreamer || exit
+cd NAPA || exit
+mkdir -p m4 config || exit
+autoreconf --force -I config -I m4 --install || exit
+./configure --with-libevent2=`pwd`/../../Event  --with-libconfuse=`pwd`/../../Conf || exit
+$MAKE -C common || exit
+$MAKE -C dclog || exit
+$MAKE -C rep || exit
+$MAKE -C monl || exit
+cd ml || exit
+./autogen.sh || exit
+./configure --with-libevent2=`pwd`/../../../Event || exit
+$MAKE || exit
 cd ..
 cd ..
-$MAKE -C GRAPES
-$MAKE -C ffmpeg
+$MAKE -C GRAPES || exit
+$MAKE -C ffmpeg || exit
 $MAKE clean
-LIBEVENT=`pwd`/../Event ML=1  $MAKE
-LIBEVENT=`pwd`/../Event ML=1 STATIC=1 $MAKE
+LIBEVENT=`pwd`/../Event ML=1  $MAKE || exit
+LIBEVENT=`pwd`/../Event ML=1 STATIC=1 $MAKE || exit
 $MAKE clean
-LIBEVENT=`pwd`/../Event ML=1 MONL=1 $MAKE
-LIBEVENT=`pwd`/../Event ML=1 MONL=1 STATIC=1 $MAKE
+LIBEVENT=`pwd`/../Event ML=1 MONL=1 $MAKE || exit
+LIBEVENT=`pwd`/../Event ML=1 MONL=1 STATIC=1 $MAKE || exit
