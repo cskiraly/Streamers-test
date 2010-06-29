@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Copyright (c) 2010 Luca Abeni
+# Copyright (c) 2010 Csaba Kiraly
+# This is free software; see gpl-3.0.txt
+
 echo "Dependencies, among others: autoconf, flex, libtool, autopoint"
 which flex || { echo "please install flex!"; exit 1; }
 which libtoolize || { echo "please install libtool!"; exit 1; }

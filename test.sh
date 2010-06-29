@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Copyright (c) 2010 Csaba Kiraly
+# Copyright (c) 2010 Luca Abeni
+# This is free software; see gpl-3.0.txt
+
 #launch it e.g. like this:
 #./test.sh -e "offerstreamer-ml" -n 5 -s "-m 1" -p "-b 40 -o 5 -c 25" -f "chbuf"
 #./test.sh -e "offerstreamer-ml" -f chbuf
