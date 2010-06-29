@@ -9,9 +9,15 @@ bashkilltrap()
   # ok that's the end
   # you can add here all possible postprocessing,
 
+  if [[ $GPERF_WAIT ]]; then
+    for i in `ls gmon.out.*`; do gprof $STREAMER $i > gprof.${i#gmon.out.}; done
+    gprof $STREAMER gmon.out.* > gprof.all
+  fi
+
   ps -o pid= --ppid $$ | xargs kill 2>/dev/null
 }
 trap bashkilltrap 0
+
 #defaults
 IFACE=lo
 SOURCE_PORT=6666
@@ -27,7 +33,7 @@ CHURN_MIN=100000000
 CHURN_WAIT=10
 
 #process options
-while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:" opt; do
+while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:g:" opt; do
   case $opt in
     I)	# the interface to use for all peers and the source, e.g. -I eth1
       IFACE=$OPTARG
@@ -86,6 +92,9 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:" opt; do
     w)	# churn: seconds to wait before restarting peer
       CHURN_WAIT=$OPTARG
       ;;
+    g)	# gperf: seconds to wait before killing peers and generating gperf data. Use only with version compiled with -pg !!!
+      GPERF_WAIT=$OPTARG
+      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
@@ -96,6 +105,8 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:" opt; do
       ;;
   esac
 done
+
+[[ $GPERF_WAIT ]] && export GMON_OUT_PREFIX="gmon.out"
 
 [[ $CHURN_MAX ]] || CHURN_MAX=$CHURN_MIN
 
@@ -152,6 +163,9 @@ for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     churn $CHURN_MIN $CHURN_MAX $CHURN_WAIT &
 done
 
+if [[ $GPERF_WAIT ]]; then
+   (sleep $GPERF_WAIT; killall $STREAMER) &
+fi
 
 FIFO=fifo.$SOURCE_PORT
 rm -f $FIFO
