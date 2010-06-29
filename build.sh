@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Dependencies, among others: autoconf, flex, libtool, autopoint"
 which flex || { echo "please install flex!"; exit 1; }
 which libtoolize || { echo "please install libtool!"; exit 1; }

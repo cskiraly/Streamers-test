@@ -1,3 +1,5 @@
+#!/bin/bash
+
 MAKE="make -j 4"
 
 if [ ! -f experimental ]; then

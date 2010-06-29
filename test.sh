@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #launch it e.g. like this:
 #./test.sh -e "offerstreamer-ml" -n 5 -s "-m 1" -p "-b 40 -o 5 -c 25" -f "chbuf"
 #./test.sh -e "offerstreamer-ml" -f chbuf

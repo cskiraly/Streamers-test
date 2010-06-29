@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [[ $1 && $1 == "experimental" ]]; then
   touch experimental
 fi
