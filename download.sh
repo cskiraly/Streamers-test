@@ -7,7 +7,9 @@ if [ ! -f experimental ]; then
   svn co https://repository.napa-wine.eu/svn/napawine-software/trunk/GRAPES || exit
 else
   git clone http://www.disi.unitn.it/~kiraly/SharedGits/Streamers.git || exit; mv Streamers OfferStreamer || exit
+  cd OfferStreamer; git checkout -b experimental origin/experimental || exit; cd ..
   git clone http://www.disi.unitn.it/~kiraly/PublicGits/GRAPES.git || exit
+  cd GRAPES; git checkout -b experimental origin/experimental || exit; cd ..
 fi
 
 # get libevent 2.0.3 (warning: newer version were not tested)
