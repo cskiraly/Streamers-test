@@ -11,7 +11,11 @@ tar xvzf confuse-2.7.tar.gz || exit
 #git clone git://git.sv.gnu.org/confuse.git
 #cd confuse; git checkout V2_7; cd ..
 
-cd OfferStreamer || exit
-mv ../GRAPES NAPA || exit
+#fix names
+mv GRAPES NAPA || exit
 ln -s NAPA/som GRAPES || exit
 make ffmpeg || exit
+
+#create bindings
+ln -s ../NAPA OfferStreamer/NAPA || exit
+ln -s ../GRAPES OfferStreamer/GRAPES || exit
