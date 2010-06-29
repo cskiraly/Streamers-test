@@ -16,26 +16,35 @@ cd confuse-2.7  || exit
 $MAKE || exit; $MAKE install || exit
 cd ..
 
-cd OfferStreamer || exit
+cd ffmpeg || exit
+./configure || exit
+$MAKE || exit
+cd ..
+
+cd GRAPES || exit
+$MAKE || exit
+cd ..
+
 cd NAPA || exit
+cd ml || exit
+./autogen.sh || exit
+./configure --with-libevent2=`pwd`/../../Event || exit
+$MAKE || exit
+cd ..
 mkdir -p m4 config || exit
 autoreconf --force -I config -I m4 --install || exit
-./configure --with-libevent2=`pwd`/../../Event  --with-libconfuse=`pwd`/../../Conf || exit
+./configure --with-libevent2=`pwd`/../Event  --with-libconfuse=`pwd`/../Conf || exit
 $MAKE -C common || exit
 $MAKE -C dclog || exit
 $MAKE -C rep || exit
 $MAKE -C monl || exit
-cd ml || exit
-./autogen.sh || exit
-./configure --with-libevent2=`pwd`/../../../Event || exit
-$MAKE || exit
 cd ..
-cd ..
-$MAKE -C GRAPES || exit
-$MAKE -C ffmpeg || exit
+
+cd OfferStreamer || exit
 $MAKE clean
 LIBEVENT=`pwd`/../Event ML=1  $MAKE || exit
 LIBEVENT=`pwd`/../Event ML=1 STATIC=1 $MAKE || exit
 $MAKE clean
 LIBEVENT=`pwd`/../Event ML=1 MONL=1 $MAKE || exit
 LIBEVENT=`pwd`/../Event ML=1 MONL=1 STATIC=1 $MAKE || exit
+cd ..
