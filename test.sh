@@ -4,8 +4,14 @@
 #./test.sh -e "offerstreamer-ml" -f chbuf
 
 # Kill everything we've started on exit (with trap).
-trap "ps -o pid= --ppid $$ | xargs kill 2>/dev/null" 0
+bashkilltrap()
+{
+  # ok that's the end
+  # you can add here all possible postprocessing,
 
+  ps -o pid= --ppid $$ | xargs kill 2>/dev/null
+}
+trap bashkilltrap 0
 #defaults
 IFACE=lo
 SOURCE_PORT=6666
