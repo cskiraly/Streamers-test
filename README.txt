@@ -13,9 +13,10 @@ cd Streamers-build
 FILES
 -----
 
-- download.sh <experimental>: download the Streamer and (hopefully) all
+- download.sh [experimental]: download the Streamer and (hopefully) all
 required libraries. Use the "experimental" option to download the
-experimental version of the streamer. WARNINNG: this version might not compile/work!
+experimental version of the streamer. WARNINNG: this version might not
+compile/work! Use at your own risk!
 
 - build.sh: build the streamer (normal or experimental, depending on
 what had been downloaded)
