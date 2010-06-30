@@ -12,6 +12,11 @@ else
   UP="git pull"
 fi
 
+cd GRAPES
+$UP
+make || make -C som || exit
+cd ..
+
 cd NAPA
 $UP
 make -C ml 
