@@ -12,22 +12,22 @@ else
   UP="git pull"
 fi
 
-cd GRAPES
-$UP
+cd GRAPES || exit
+$UP || exit
 make || make -C som || exit
 cd ..
 
-cd NAPA
-$UP
-make -C ml 
-make -C common
-make -C dclog
-make -C rep
-make -C monl
+cd NAPA || exit
+$UP || exit
+make -C ml || exit
+make -C common || exit
+make -C dclog || exit
+make -C rep || exit
+make -C monl || exit
 cd ..
 
-cd OfferStreamer
-$UP
+cd OfferStreamer || exit
+$UP || exit
 $MAKE clean
 LIBEVENT=`pwd`/../Event ML=1  $MAKE || exit
 LIBEVENT=`pwd`/../Event ML=1 STATIC=1 $MAKE || exit
