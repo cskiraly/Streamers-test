@@ -28,7 +28,7 @@ $MAKE || exit
 cd ..
 
 cd GRAPES || exit
-$MAKE || exit
+$MAKE || $MAKE -C som || exit
 cd ..
 
 cd NAPA || exit
