@@ -9,8 +9,8 @@ if [[ $1 && $1 == "experimental" ]]; then
 fi
 
 if [ ! -f experimental ]; then
-  svn co https://repository.napa-wine.eu/svn/napawine-software/trunk/Applications/OfferStreamer || exit
-  svn co https://repository.napa-wine.eu/svn/napawine-software/trunk/GRAPES || exit
+  svn co https://repository.napa-wine.eu/svn/napawine-software/trunk/Applications/OfferStreamer -r 1504 || exit
+  svn co https://repository.napa-wine.eu/svn/napawine-software/trunk/GRAPES -r 1504 || exit
   #fix names
   mv GRAPES NAPA || exit
   ln -s NAPA/som GRAPES || exit
