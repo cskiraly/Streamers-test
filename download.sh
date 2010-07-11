@@ -36,6 +36,7 @@ tar xvzf confuse-2.7.tar.gz || exit
 #get ffmpeg
 if [ ! -f experimental ]; then
   svn checkout svn://svn.ffmpeg.org/ffmpeg/trunk -r 23732 ffmpeg
+  svn up -r31301 ffmpeg/libswscale
 else
   (wget http://ffmpeg.org/releases/ffmpeg-checkout-snapshot.tar.bz2; tar xjf ffmpeg-checkout-snapshot.tar.bz2; mv ffmpeg-checkout-20* ffmpeg) || svn checkout svn://svn.ffmpeg.org/ffmpeg/trunk ffmpeg
 fi
