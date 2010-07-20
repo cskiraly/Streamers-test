@@ -23,6 +23,52 @@ bashkilltrap()
 }
 trap bashkilltrap 0
 
+
+print_usage()
+{
+echo "
+This is a simple script that start a source and some peers on the local machine
+
+It accept the following options:
+    e:  # streamer executable, e.g. -e ./offerstreamer-ml-monl. Current: $STREAMER
+
+    I:	# the interface to use for all peers and the source, e.g. -I eth1. Current: $IFACE
+
+    OPTIONS FOR THE SOURCE PEER
+    S:	# the udp port used by the source. Current: $SOURCE_PORT
+    v:  # stream video file, e.g. -v ~/video/big_buck_bunny_480p_600k.mpg. Current: $VIDEO
+    F:	# filter output of source grepping for the argument e.g. -F \"sending\|received\". Current: $SOURCE_FILTER
+    Z:	# don't start the source. Use this mode to attach these peers to an exisiting source. Current: $NO_SOURCE
+    s:	# extra options to pass to the source, .e.g. -s \"-m 3\". Current: $SOURCE_OPTIONS
+
+    OPTIONS FOR THE PEERS
+    i:	# IP address of the source to connect to. Might be needed if -I!=lo. Current: $SOURCE_IP
+    P:	# peers use ports starting from this one. Current: $PEER_PORT_BASE
+    p:	# extra options passed to each peer, e.g. -p \"-c 50 -b 100\". Current: $PEER_OPTIONS
+    N:	# number of peers running in background (only stderr is logged). Use -N 0 to disable. Current: $NUM_PEERS
+    O:	# number of peers showing their ouput (on stdout). Current: $NUM_PEERS_O
+    o:	# override output program, e.g. -o \"fifo | vlc /dev/stdin\". Current: $OUTPUT
+    f:	# filter output of X peers grepping for the argument, e.g. -f \"chbuf\". Current: $FILTER
+    X:	# number of peers showing stderr in an xterm. If -f is specified, filter is applied. Current: $NUM_PEERS_X
+
+    DEBUG OPTIONS
+    V:	# number of peers running valgrind. Current: $NUM_PEERS_V
+    g:	# gperf: seconds to wait before killing peers and generating gperf data. Streamer must be compiled with -pg! Current: $GPERF_WAIT
+
+    t:	# churn: minimum lifetime in seconds of peers (only for N type). Current: $CHURN_MIN
+    T:	# churn: maximum lifetime in seconds of peers (only for N type). Current: $CHURN_MAX
+    w:	# churn: seconds to wait before restarting peer. Current: $CHURN_WAIT
+    
+Examples:
+
+Start a swarm with all default params, and pring chbuf messages only.
+$0 -e \"offerstreamer-ml\" -f chbuf
+
+Starts the source with optional parameter -m 1,  5 peers with param \"-b 40 -o 5 -c 25\" and print only chbuf messages
+$0 -e \"../../Applications/OfferStreamer/offerstreamer-ml-monl-static\" -s \"-m 1\" -N 5 -p \"-b 40 -o 5 -c 25\" -f \"chbuf\"
+"
+}
+
 #defaults
 IFACE=lo
 SOURCE_PORT=6666
@@ -102,10 +148,12 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:g:" opt; do
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
+      print_usage
       exit 1
       ;;
     :)
       echo "Option -$OPTARG requires an argument." >&2
+      print_usage
       exit 1
       ;;
   esac
