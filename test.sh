@@ -86,64 +86,64 @@ CHURN_WAIT=10
 #process options
 while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:g:" opt; do
   case $opt in
-    I)	# the interface to use for all peers and the source, e.g. -I eth1
+    I)
       IFACE=$OPTARG
       ;;
-    s)	# options to pass to the source, .e.g. -s "-m 3"
+    s)
       SOURCE_OPTIONS=$OPTARG
       ;;
-    i)	# IP address of the source. Might be needed if -I!=lo
+    i)
       SOURCE_IP=$OPTARG
       ;;
-    S)	# the udp port used by the source
+    S)
       SOURCE_PORT=$OPTARG
       ;;
-    p)	# extra options passed to each peer, e.g. -p "-c 50 -b 100"
+    p)
       PEER_OPTIONS=$OPTARG
       ;;
-    P)	# peers use ports starting from this one
+    P)
       PEER_PORT_BASE=$OPTARG
       ;;
-    N)	# number of peers running in background (only stderr is logged). Use -N 0 to disable.
+    N)
       NUM_PEERS=$OPTARG
       ;;
-    f)	# filter output of X peers grepping for the argument, e.g. -f "chbuf"
+    f)
       FILTER=$OPTARG
       ;;
-    F)	# filter output of source grepping for the argument e.g. -F "sending\|received"
+    F)
       SOURCE_FILTER=$OPTARG
       ;;
-    e) # overrride streamer executable, e.g. -e ./offerstreamer-ml-monl
+    e)
       STREAMER=$OPTARG
       ;;
-    v) # override video file, e.g. -v ~/video/big_buck_bunny_480p_600k.mpg
+    v)
       VIDEO=$OPTARG
       ;;
-    V)	# number of peers running valgrind
+    V)
       NUM_PEERS_V=$OPTARG
       ;;
-    O)	# number of peers showing their ouput (on stdout)
+    O)
       NUM_PEERS_O=$OPTARG
       ;;
-    o)	# override output program, e.g. -o "fifo | vlc /dev/stdin"
+    o)
       OUTPUT=$OPTARG
       ;;
-    X)	# number of peers showing stderr in an xterm. If -f is specified, it is applied.
+    X)
       NUM_PEERS_X=$OPTARG
       ;;
-    Z)	# don't start the source. Use this mode to attach these peers to an exisiting source
+    Z)
       NO_SOURCE=1
       ;;
-    t)	# churn: minimum lifetime in seconds of peers (only for N type)
+    t)
       CHURN_MIN=$OPTARG
       ;;
-    T)	# churn: maximum lifetime in seconds of peers (only for N type)
+    T)
       CHURN_MAX=$OPTARG
       ;;
-    w)	# churn: seconds to wait before restarting peer
+    w)
       CHURN_WAIT=$OPTARG
       ;;
-    g)	# gperf: seconds to wait before killing peers and generating gperf data. Use only with version compiled with -pg !!!
+    g)
       GPERF_WAIT=$OPTARG
       ;;
     \?)
