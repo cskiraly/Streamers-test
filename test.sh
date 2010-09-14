@@ -54,6 +54,7 @@ It accept the following options:
     DEBUG OPTIONS
     V:	# number of peers running valgrind. Current: $NUM_PEERS_V
     g:	# gperf: seconds to wait before killing peers and generating gperf data. Streamer must be compiled with -pg! Current: $GPERF_WAIT
+    z:	# gzip: compress each log file with gzip on-the-fly
 
     t:	# churn: minimum lifetime in seconds of peers (only for N type). Current: $CHURN_MIN
     T:	# churn: maximum lifetime in seconds of peers (only for N type). Current: $CHURN_MAX
@@ -82,9 +83,11 @@ VIDEO=foreman_cif.mpg
 OUTPUT="fifo | ffplay -"
 CHURN_MIN=100000000
 CHURN_WAIT=10
+CAT="cat"
+CATEXT=
 
 #process options
-while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:g:" opt; do
+while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:g:z" opt; do
   case $opt in
     I)
       IFACE=$OPTARG
@@ -146,6 +149,10 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:g:" opt; do
     g)
       GPERF_WAIT=$OPTARG
       ;;
+    z)
+      CAT="gzip"
+      CATEXT=".gz"
+      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       print_usage
@@ -178,7 +185,7 @@ function churn {
   fi
 
   while [ 1 ] ; do
-    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2> >(grep "$FILTER" | $CAT >stderr.$PORT$CATEXT) >/dev/null &
     PID=$!
     sleep $RUN
     kill $PID
@@ -197,17 +204,14 @@ done
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_X - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
 #  valgrind --track-origins=yes  --leak-check=full \ TODO!!!
-    FIFO=fifo.$PORT
-    rm -f $FIFO
-    mkfifo $FIFO
-    xterm -e "LD_LIBRARY_PATH=$LD_LIBRARY_PATH $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>$FIFO >/dev/null | grep '$FILTER' $FIFO" &
+    xterm -e "LD_LIBRARY_PATH=$LD_LIBRARY_PATH $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2> >(grep '$FILTER') >/dev/null" &
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_V - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     valgrind --track-origins=yes  --leak-check=full \
-    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT >/dev/null &
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2> >(grep '$FILTER' | $CAT >stderr.$PORT$CATEXT) >/dev/null &
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
