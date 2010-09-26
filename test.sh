@@ -215,7 +215,7 @@ done
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_V - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     valgrind --track-origins=yes  --leak-check=full \
-    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2> >(grep '$FILTER' | $CAT >stderr.$PORT$CATEXT) >/dev/null &
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2> >(grep "$FILTER" | $CAT >stderr.$PORT$CATEXT) >/dev/null &
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
