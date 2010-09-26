@@ -75,7 +75,7 @@ $0 -e \"../../Applications/OfferStreamer/offerstreamer-ml-monl-static\" -s \"-m 
 IFACE=lo
 SOURCE_PORT=6666
 SOURCE_IP=127.0.0.1
-PEER_PORT_BASE=5555
+PEER_PORT_BASE=6667
 NUM_PEERS=1
 FILTER=""
 SOURCE_FILTER=""
