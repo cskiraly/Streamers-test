@@ -50,14 +50,15 @@ It accept the following options:
     o:	# override output program, e.g. -o \"fifo | vlc /dev/stdin\". Current: $OUTPUT
     f:	# filter output of X peers grepping for the argument, e.g. -f \"chbuf\". Current: $FILTER
     X:	# number of peers showing stderr in an xterm. If -f is specified, filter is applied. Current: $NUM_PEERS_X
+    C:	# number of peers runnung in background and churning. Current: $NUM_PEERS_C
 
     DEBUG OPTIONS
     V:	# number of peers running valgrind. Current: $NUM_PEERS_V
     g:	# gperf: seconds to wait before killing peers and generating gperf data. Streamer must be compiled with -pg! Current: $GPERF_WAIT
     z:	# gzip: compress each log file with gzip on-the-fly
 
-    t:	# churn: minimum lifetime in seconds of peers (only for N type). Current: $CHURN_MIN
-    T:	# churn: maximum lifetime in seconds of peers (only for N type). Current: $CHURN_MAX
+    t:	# churn: minimum lifetime in seconds of peers (only for C type). Current: $CHURN_MIN
+    T:	# churn: maximum lifetime in seconds of peers (only for C type). Current: $CHURN_MAX
     w:	# churn: seconds to wait before restarting peer. Current: $CHURN_WAIT
     
 Examples:
@@ -87,7 +88,7 @@ CAT="cat"
 CATEXT=
 
 #process options
-while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:g:z" opt; do
+while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:t:T:w:g:z" opt; do
   case $opt in
     I)
       IFACE=$OPTARG
@@ -136,6 +137,9 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:Zt:T:w:g:z" opt; do
       ;;
     Z)
       NO_SOURCE=1
+      ;;
+    C)
+      NUM_PEERS_C=$OPTARG
       ;;
     t)
       CHURN_MIN=$OPTARG
@@ -215,9 +219,15 @@ for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
-((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
+((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_C - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     churn $CHURN_MIN $CHURN_MAX $CHURN_WAIT &
+done
+
+((PEER_PORT_BASE = PEER_PORT_MAX + 1))
+((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
+for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
+    $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2> >(grep "$FILTER" | $CAT >stderr.$PORT$CATEXT) >/dev/null &
 done
 
 if [[ $GPERF_WAIT ]]; then
