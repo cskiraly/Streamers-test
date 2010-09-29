@@ -198,6 +198,17 @@ function churn {
 
 }
 
+FIFO=fifo.$SOURCE_PORT
+rm -f $FIFO
+mkfifo $FIFO
+#valgrind --track-origins=yes  --leak-check=full TODO!
+if [[ $NO_SOURCE ]]; then
+   sleep 366d
+   SPID=$!
+else 
+   $STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$SOURCE_FILTER" $FIFO &
+   SPID=$!
+fi
 
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_O - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
@@ -234,12 +245,4 @@ if [[ $GPERF_WAIT ]]; then
    (sleep $GPERF_WAIT; killall $STREAMER) &
 fi
 
-FIFO=fifo.$SOURCE_PORT
-rm -f $FIFO
-mkfifo $FIFO
-#valgrind --track-origins=yes  --leak-check=full TODO!
-if [[ $NO_SOURCE ]]; then
-   sleep 366d
-else 
-   $STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$SOURCE_FILTER" $FIFO
-fi
+wait $SPID
