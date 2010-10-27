@@ -203,7 +203,7 @@ rm -f $FIFO
 mkfifo $FIFO
 #valgrind --track-origins=yes  --leak-check=full TODO!
 if [[ $NO_SOURCE ]]; then
-   sleep 366d
+   sleep 366d &
    SPID=$!
 else 
    $STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$SOURCE_FILTER" $FIFO &
