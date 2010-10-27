@@ -57,9 +57,11 @@ It accept the following options:
     g:	# gperf: seconds to wait before killing peers and generating gperf data. Streamer must be compiled with -pg! Current: $GPERF_WAIT
     z:	# gzip: compress each log file with gzip on-the-fly
 
-    t:	# churn: minimum lifetime in seconds of peers (only for C type). Current: $CHURN_MIN
-    T:	# churn: maximum lifetime in seconds of peers (only for C type). Current: $CHURN_MAX
-    w:	# churn: seconds to wait before restarting peer. Current: $CHURN_WAIT
+    CHURN OPTIONS (for C type peers)
+    t:	# minimum lifetime in seconds of peers (only for C type). Current: $CHURN_MIN
+    T:	# maximum lifetime in seconds of peers (only for C type). Current: $CHURN_MAX
+    w:	# seconds to wait before restarting peer. Current: $CHURN_WAIT
+    c:	# after churn, increase port number by this amount. Default: number of C type peers. Set to 0 to have peers that resurrect with the same address.
 
     TIMING OPTIONS
     W: # wait W seconds between starting peers
@@ -93,7 +95,7 @@ CATEXT=
 STARTUP_WAIT=0
 
 #process options
-while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:t:T:w:g:zW:" opt; do
+while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:c:t:T:w:g:zW:" opt; do
   case $opt in
     I)
       IFACE=$OPTARG
@@ -146,6 +148,9 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:t:T:w:g:zW:" opt; do
     C)
       NUM_PEERS_C=$OPTARG
       ;;
+    c)
+      CHURN_PORT_INCR=$OPTARG
+      ;;
     t)
       CHURN_MIN=$OPTARG
       ;;
@@ -182,6 +187,8 @@ done
 
 [[ $CHURN_MAX ]] || CHURN_MAX=$CHURN_MIN
 
+: ${CHURN_PORT_INCR:=$NUM_PEERS_C}	#set default port increment to the number of C peers
+
 function churn {
   # Kill everything we've started on exit (with trap).
   trap "ps -o pid= --ppid $BASHPID | xargs kill 2>/dev/null" 0
@@ -189,6 +196,8 @@ function churn {
   MIN=$1
   MAX=$2
   PAUSE=$3
+  PORT=$4
+  PORT_INCREMENT=$5
 
   if [ $MIN -lt $MAX ]; then
     let "RUN=$MIN+($RANDOM%($MAX-$MIN))"
@@ -202,6 +211,7 @@ function churn {
     sleep $RUN
     kill $PID
     sleep $PAUSE
+    ((PORT+=PORT_INCREMENT))
   done
 
 }
@@ -251,7 +261,7 @@ done
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_C - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
-    churn $CHURN_MIN $CHURN_MAX $CHURN_WAIT &
+    churn $CHURN_MIN $CHURN_MAX $CHURN_WAIT $PORT $CHURN_PORT_INCR &
     sleep $STARTUP_WAIT
 done
 
