@@ -60,6 +60,10 @@ It accept the following options:
     t:	# churn: minimum lifetime in seconds of peers (only for C type). Current: $CHURN_MIN
     T:	# churn: maximum lifetime in seconds of peers (only for C type). Current: $CHURN_MAX
     w:	# churn: seconds to wait before restarting peer. Current: $CHURN_WAIT
+
+    TIMING OPTIONS
+    W: # wait W seconds between starting peers
+
     
 Examples:
 
@@ -86,9 +90,10 @@ CHURN_MIN=100000000
 CHURN_WAIT=10
 CAT="cat"
 CATEXT=
+STARTUP_WAIT=0
 
 #process options
-while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:t:T:w:g:z" opt; do
+while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:t:T:w:g:zW:" opt; do
   case $opt in
     I)
       IFACE=$OPTARG
@@ -153,6 +158,9 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:t:T:w:g:z" opt; do
     g)
       GPERF_WAIT=$OPTARG
       ;;
+    W)
+      STARTUP_WAIT=$OPTARG
+      ;;
     z)
       CAT="gzip"
       CATEXT=".gz"
@@ -209,10 +217,12 @@ else
    $STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$SOURCE_FILTER" $FIFO &
    SPID=$!
 fi
+sleep $STARTUP_WAIT
 
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_O - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2>stderr.$PORT | `eval "$OUTPUT"` &
+    sleep $STARTUP_WAIT
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
@@ -220,6 +230,7 @@ done
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
 #  valgrind --track-origins=yes  --leak-check=full \ TODO!!!
     xterm -e "LD_LIBRARY_PATH=$LD_LIBRARY_PATH $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2> >(grep '$FILTER') >/dev/null" &
+    sleep $STARTUP_WAIT
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
@@ -227,18 +238,21 @@ done
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     valgrind --track-origins=yes  --leak-check=full \
     $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2> >(grep "$FILTER" | $CAT >stderr.$PORT$CATEXT) >/dev/null &
+    sleep $STARTUP_WAIT
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS_C - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     churn $CHURN_MIN $CHURN_MAX $CHURN_WAIT &
+    sleep $STARTUP_WAIT
 done
 
 ((PEER_PORT_BASE = PEER_PORT_MAX + 1))
 ((PEER_PORT_MAX=PEER_PORT_BASE + NUM_PEERS - 1))
 for PORT in `seq $PEER_PORT_BASE 1 $PEER_PORT_MAX`; do
     $STREAMER $PEER_OPTIONS -I $IFACE -P $PORT -i $SOURCE_IP -p $SOURCE_PORT 2> >(grep "$FILTER" | $CAT >stderr.$PORT$CATEXT) >/dev/null &
+    sleep $STARTUP_WAIT
 done
 
 if [[ $GPERF_WAIT ]]; then
