@@ -1,0 +1,28 @@
+DURATION=90
+MEASURE_START=0
+MEASURE_EVERY=5
+BINPREFIX="`pwd`/offerstreamer-ffmpeg-static-"
+BINPOSTFIX=""
+
+CYCLEs="1"
+PEERNUMs="100"
+PEERNUM1s="30 50"
+PEERNUM2s='$(($PEERNUM - $PEERNUM1))'
+NEIGHs="10 20"
+UPRATEPART1s="0.9 0.8 0.7 0.6 0.5"
+UPRATEs="0.6 1" #mbit/s
+UPRATE1s='$UPRATE \* $PEERNUM \* $UPRATEPART1 / $PEERNUM1 | bc -l' #mbit/s
+UPRATE2s='$UPRATE \* $PEERNUM \* \( 1 - $UPRATEPART1 \) / $PEERNUM2 | bc -l' #mbit/s
+DOWNRATEs="10" #mbit/s
+DELAYs="20 35" #msec
+CPSs="0 2"
+CHBUFs="32"
+REORDBUFs='$CHBUF'
+BINs="HRCcsaba_f"
+
+#init
+tc='sudo tc'
+TESTSH="./test.sh"
+VIDEO="~/video/big_buck_bunny_480p_600k.mpg"
+IFDEV=lo
+PROTOCOL=0x11 #0x11 for UDP; 0x6 for TCP
