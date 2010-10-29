@@ -22,6 +22,7 @@ BINs="HRCcsaba_f"
 
 #init
 tc='sudo tc'
+TESTSH="./test.sh"
 IFDEV=lo
 PROTOCOL=0x11 #0x11 for UDP; 0x6 for TCP
 
@@ -110,13 +111,13 @@ for BIN in `eval echo $BINs`; do
   for PORT in `seq 6667 $((6667+$PEERNUM1-1))`; do
     limitupdown $PORT $DOWNRATE 0 $DELAY $UPRATE1 0 $DELAY
   done;
-  $HOME/local/git/Streamers-test/test.sh -v ~/video/big_buck_bunny_480p_600k.mpg -I lo -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0" -s "-M 0 -n stun_server=0" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM1 >a &
+  $TESTSH -v ~/video/big_buck_bunny_480p_600k.mpg -I lo -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0" -s "-M 0 -n stun_server=0" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM1 >a &
   PIDS+=" $!"
 
   for PORT in `seq $((6667+$PEERNUM1)) $((6667+$PEERNUM1+$PEERNUM2-1))`; do
     limitupdown $PORT $DOWNRATE 0 $DELAY $UPRATE2 0 $DELAY
   done;
-  $HOME/local/git/Streamers-test/test.sh -v ~/video/big_buck_bunny_480p_600k.mpg -I lo -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0" -s "-M 0 -n stun_server=0" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM2 -P $((6667+$PEERNUM1)) -Z >a &
+  $TESTSH -v ~/video/big_buck_bunny_480p_600k.mpg -I lo -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0" -s "-M 0 -n stun_server=0" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM2 -P $((6667+$PEERNUM1)) -Z >a &
   PIDS+=" $!"
 
   sleep $DURATION
