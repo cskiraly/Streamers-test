@@ -29,3 +29,6 @@ a new build folder and download again!
 - test.sh: test varios aspects of the streamer, running e.g. one source
 and several peers. For the actual list of command line options and some
 command line examples see documentation inside the script
+
+- cycletest.sh: run a series of tests varying a number of parameters and
+measureing their effects on streaming performance and network load
