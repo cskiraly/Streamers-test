@@ -3,6 +3,7 @@ use strict;
 
 my $meancolumn = 5;
 
+my $colcount;
 my %sums = ();
 my %cnt = ();
 while( my $line = <> ){
@@ -10,6 +11,15 @@ while( my $line = <> ){
   if ($line !~ /^\s*#/) {
     my @fields = split(/\,/,$line);
     if (scalar(@fields) < $meancolumn) { next;}
+
+    if (! defined($colcount)) {
+      $colcount = scalar(@fields);
+    } else {
+      if (scalar(@fields) != $colcount) {
+        printf(STDERR "Warning: skipping line with wrong column count: $line\n");
+        next;
+      }
+    }
 
     my $prefix = join(',',@fields[0..$meancolumn-1]);
     my $postfix = join(',',@fields[($meancolumn+1) .. (scalar(@fields)-1)]);
