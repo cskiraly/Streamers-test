@@ -9,18 +9,8 @@ PROTOCOL=0x11 #0x11 for UDP; 0x6 for TCP
 
 usage()
 {
-  echo "Usage: $0 ... see in script file"
+  echo "Usage: $0 ... see file"
 }
-
-[ $# -ne 6 ] || { usage; exit 1; }
-
-IFDEV=$1
-PORT1=$2
-PORT2=$3
-DOWNRATE=$4 #mbit/s
-UPRATE=$5 #mbit/s
-LOSS=$6 #%
-DELAY=$7 #msec
 
 limitupdown_init()
 {
@@ -58,9 +48,38 @@ limitupdown()
     flowid 1:$HANDLE || exit
 }
 
-limitupdown_init
+[ $# -ge 1 ] || { usage; exit 1; }
 
+COMMAND=$1
+shift
 
-for PORT in `seq $PORT1 $PORT2`; do
-  limitupdown $PORT $DOWNRATE 0 $DELAY $UPRATE 0 $DELAY
-done;
+if [ "$COMMAND" == "init" ]; then
+  [ $# -eq 1 ] || { usage; exit 1; }
+
+  IFDEV=$1
+  limitupdown_init
+
+elif [ "$COMMAND" == "peers" ]; then
+  [ $# -eq 7 ] || { usage; exit 1; }
+
+  IFDEV=$1
+  PORT1=$2
+  PORT2=$3
+  DOWNRATE=$4 #mbit/s
+  UPRATE=$5 #mbit/s
+  LOSS=$6 #%
+  DELAY=$7 #msec
+
+  for PORT in `seq $PORT1 $PORT2`; do
+    limitupdown $PORT $DOWNRATE 0 $DELAY $UPRATE 0 $DELAY
+  done;
+
+elif [ "$COMMAND" == "end" ]; then
+  [ $# -eq 1 ] || { usage; exit 1; }
+
+  IFDEV=$1
+
+  ${tc} qdisc del dev $IFDEV root 2>/dev/null
+else
+  usage; exit 1;
+fi
