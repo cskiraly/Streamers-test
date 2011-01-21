@@ -71,7 +71,7 @@ elif [ "$COMMAND" == "peers" ]; then
   DELAY=$7 #msec
 
   for PORT in `seq $PORT1 $PORT2`; do
-    limitupdown $PORT $DOWNRATE 0 $DELAY $UPRATE 0 $DELAY
+    limitupdown $PORT $DOWNRATE $LOSS $DELAY $UPRATE $LOSS $DELAY
   done;
 
 elif [ "$COMMAND" == "end" ]; then
