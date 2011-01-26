@@ -13,7 +13,6 @@ UPRATEPART1s="0.9 0.8 0.7 0.6 0.5"
 UPRATEs="0.6 1" #mbit/s
 UPRATE1s='$UPRATE \* $PEERNUM \* $UPRATEPART1 / $PEERNUM1 | bc -l' #mbit/s
 UPRATE2s='$UPRATE \* $PEERNUM \* \( 1 - $UPRATEPART1 \) / $PEERNUM2 | bc -l' #mbit/s
-DOWNRATEs="10" #mbit/s
 DELAYs="20 35" #msec
 CPSs="25"
 CHBUFs="32"
