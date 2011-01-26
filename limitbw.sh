@@ -16,7 +16,7 @@ limitupdown_init()
 {
   ${tc} qdisc del dev $IFDEV root 2>/dev/null
   ${tc} qdisc add dev $IFDEV root handle 1: htb default 1
-  ${tc} class add dev $IFDEV parent 1: classid 1:1 htb rate 100mbit burst 15k
+  ${tc} class add dev $IFDEV parent 1: classid 1:1 htb rate 10000mbit burst 15k
 }
 
 limitupdown()
