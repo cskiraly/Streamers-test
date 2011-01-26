@@ -60,11 +60,11 @@ for BIN in `eval echo $BINs`; do
   $LIMITBW init $IFDEV
 
   $LIMITBW peers $IFDEV 6667 $((6667+$PEERNUM1-1)) $DOWNRATE $UPRATE1 0 $DELAY
-  $TESTSH -v $VIDEO -I lo -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0" -s "-M 0 -n stun_server=0" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM1 >a &
+  $TESTSH -v $VIDEO -I $IFDEV -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0" -s "-M 0 -n stun_server=0" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM1 >a &
   PIDS+=" $!"
 
   $LIMITBW peers $IFDEV $((6667+$PEERNUM1)) $((6667+$PEERNUM1+$PEERNUM2-1)) $DOWNRATE $UPRATE2 0 $DELAY
-  $TESTSH -I lo -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0" -s "-M 0 -n stun_server=0" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM2 -P $((6667+$PEERNUM1)) -Z >a &
+  $TESTSH -I $IFDEV -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0" -s "-M 0 -n stun_server=0" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM2 -P $((6667+$PEERNUM1)) -Z >a &
   PIDS+=" $!"
 
   sleep $DURATION
