@@ -24,5 +24,6 @@ BINs="HRCcsaba_f"
 tc='sudo tc'
 TESTSH="./test.sh"
 VIDEO="~/video/big_buck_bunny_480p_600k.mpg"
+LIMITBW="./limitbw.sh"
 IFDEV=lo
 PROTOCOL=0x11 #0x11 for UDP; 0x6 for TCP
