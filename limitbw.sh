@@ -22,24 +22,12 @@ limitupdown_init()
 limitupdown()
 {
   PORT=$1
-  DOWN_SPEED=$2 #mbit/s
-  DOWN_LOSS=$3 #%
-  DOWN_DELAY=$4 #msec
   UP_SPEED=$5 #mbit/s
   UP_LOSS=$6 #%
   UP_DELAY=$7 #msec
 
-   # limit downlink
-  HANDLE=$PORT
-  ${tc} class add dev $IFDEV parent 1:1 classid 1:$HANDLE htb rate ${DOWN_SPEED}mbit burst 15k || exit
-  ${tc} qdisc add dev $IFDEV parent 1:$HANDLE handle $HANDLE: netem loss ${DOWN_LOSS}% delay ${DOWN_DELAY}msec || exit
-  ${tc} filter add dev $IFDEV protocol ip parent 1:0 prio 1 u32 \
-    match ip protocol $PROTOCOL 0xff \
-    match ip dport $PORT 0xffff \
-    flowid 1:$HANDLE || exit
-
    # limit uplink
-  HANDLE=$(($PORT + 2000))
+  HANDLE=$(($PORT))
   ${tc} class add dev $IFDEV parent 1:1 classid 1:$HANDLE htb rate ${UP_SPEED}mbit burst 15k || exit
   ${tc} qdisc add dev $IFDEV parent 1:$HANDLE handle $HANDLE: netem loss ${UP_LOSS}% delay ${UP_DELAY}msec || exit
   ${tc} filter add dev $IFDEV protocol ip parent 1:0 prio 1 u32 \
@@ -65,13 +53,12 @@ elif [ "$COMMAND" == "peers" ]; then
   IFDEV=$1
   PORT1=$2
   PORT2=$3
-  DOWNRATE=$4 #mbit/s
-  UPRATE=$5 #mbit/s
-  LOSS=$6 #%
-  DELAY=$7 #msec
+  UPRATE=$4 #mbit/s
+  LOSS=$5 #%
+  DELAY=$6 #msec
 
   for PORT in `seq $PORT1 $PORT2`; do
-    limitupdown $PORT $DOWNRATE $LOSS $DELAY $UPRATE $LOSS $DELAY
+    limitupdown $PORT $UPRATE $LOSS $DELAY
   done;
 
 elif [ "$COMMAND" == "end" ]; then
