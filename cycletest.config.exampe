@@ -23,6 +23,6 @@ BINs="HRCcsaba_f"
 tc='sudo tc'
 TESTSH="./test.sh"
 LIMITBW="./limitbw.sh"
-VIDEO="~/video/big_bunny_orig/big_buck_bunny_480p_stereo.avi"
+VIDEO=~/video/big_bunny_orig/big_buck_bunny_480p_stereo.avi
 IFDEV=lo
 PROTOCOL=0x11 #0x11 for UDP; 0x6 for TCP
