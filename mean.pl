@@ -1,12 +1,17 @@
 #!/usr/bin/perl
 use strict;
 
-my $meancolumn = 5;
+if ($#ARGV+1 != 1) {
+  printf(STDERR "Usage: mean.pl <column>\n");
+  exit 1;
+}
+
+my $meancolumn = $ARGV[0];
 
 my $colcount;
 my %sums = ();
 my %cnt = ();
-while( my $line = <> ){
+while( my $line = <STDIN> ){
   chomp($line);
   if ($line !~ /^\s*#/) {
     my @fields = split(/\,/,$line);
