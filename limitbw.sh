@@ -22,9 +22,9 @@ limitupdown_init()
 limitupdown()
 {
   PORT=$1
-  UP_SPEED=$5 #mbit/s
-  UP_LOSS=$6 #%
-  UP_DELAY=$7 #msec
+  UP_SPEED=$2 #mbit/s
+  UP_LOSS=$3 #%
+  UP_DELAY=$4 #msec
 
    # limit uplink
   HANDLE=$(($PORT))
@@ -48,7 +48,7 @@ if [ "$COMMAND" == "init" ]; then
   limitupdown_init
 
 elif [ "$COMMAND" == "peers" ]; then
-  [ $# -eq 7 ] || { usage; exit 1; }
+  [ $# -eq 6 ] || { usage; exit 1; }
 
   IFDEV=$1
   PORT1=$2
