@@ -19,7 +19,7 @@ limitupdown_init()
   ${tc} class add dev $IFDEV parent 1: classid 1:1 htb rate 10000mbit burst 15k
 }
 
-limitupdown()
+limitup()
 {
   PORT=$1
   UP_SPEED=$2 #mbit/s
@@ -58,7 +58,7 @@ elif [ "$COMMAND" == "peers" ]; then
   DELAY=$6 #msec
 
   for PORT in `seq $PORT1 $PORT2`; do
-    limitupdown $PORT $UPRATE $LOSS $DELAY
+    limitup $PORT $UPRATE $LOSS $DELAY
   done;
 
 elif [ "$COMMAND" == "end" ]; then
