@@ -1,25 +1,25 @@
-DURATION=90
-MEASURE_START=0
-MEASURE_EVERY=5
-BINPREFIX="`pwd`/offerstreamer-ffmpeg-static-"
-BINPOSTFIX=""
+DURATION=90		#the duration of each run [seconds]
+MEASURE_START=0		#start to gether statistics after this time [seconds]
+MEASURE_EVERY=5		#write out and clear statistics every [seconds]
+BINPREFIX="`pwd`/offerstreamer-ffmpeg-static-"	#prefix for different binaries
+BINPOSTFIX=""		#postfix for different binaries
 
-CYCLEs="1"
-PEERNUMs="100"
-PEERNUM1s="30 50"
-PEERNUM2s='$(($PEERNUM - $PEERNUM1))'
-NEIGHs="10 20"
-UPRATEPART1s="0.9 0.8 0.7 0.6 0.5"
-UPRATEs="0.6 1" #mbit/s
-UPRATE1s='$UPRATE \* $PEERNUM \* $UPRATEPART1 / $PEERNUM1 | bc -l' #mbit/s
-UPRATE2s='$UPRATE \* $PEERNUM \* \( 1 - $UPRATEPART1 \) / $PEERNUM2 | bc -l' #mbit/s
-DELAYs="20 35" #msec
-CPSs="25"
-CHBUFs="32"
-REORDBUFs='$CHBUF'
-BINs="HRCcsaba_f"
+CYCLEs="1"		#list of cycle IDs (cycles are identical re-runs of all the parameter cominations). Use "1 2 3" to have 3 cycles to average on
+PEERNUMs="100"		#number of peers [peers]
+PEERNUM1s="30 50"	#number of peers in group 1	[peers]
+PEERNUM2s='$(($PEERNUM - $PEERNUM1))'	#number of peers in group 2. Note how '' is used to trigger lazy evaluation! [peers]
+NEIGHs="10 20"		#target neighbourhood size [peers]
+UPRATEPART1s="0.9 0.8 0.7 0.6 0.5"	#the part of overall uplink capacity contributed by group 1 nodes[0..1]
+UPRATEs="0.6 1" 	#uplink capacity [mbit/s]
+UPRATE1s='$UPRATE \* $PEERNUM \* $UPRATEPART1 / $PEERNUM1 | bc -l'	#uplink capacity of individual peers in group 1 [mbit/s]
+UPRATE2s='$UPRATE \* $PEERNUM \* \( 1 - $UPRATEPART1 \) / $PEERNUM2 | bc -l'	#same for group 2 [mbit/s]
+DELAYs="20 35"		#end-to-end dalay added at the IP level. Note that this is additional to any queuing delay due to rate limits! [msec]
+CPSs="25"		#chunks/sec, offers/sec, or number of offerthreads, depending on the implementation used. It is the -c parameter of the streamer
+CHBUFs="32"		#chunk buffer size, defined in [chunks] in current streamers
+REORDBUFs='$CHBUF'	#size of the reordering buffer, defined in [chunks] in current streamers
+BINs="HRCcsaba_f"	#the version of the binary to use. is $binprefix$bin$binpostfix
 
-#init
+#some generic parameters and pointes to supplementary scripts
 tc='sudo tc'
 TESTSH="./test.sh"
 LIMITBW="./limitbw.sh"

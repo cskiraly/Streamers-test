@@ -3,6 +3,12 @@
 # Copyright (c) 2010 Csaba Kiraly
 # This is free software; see gpl-3.0.txt
 
+# This script limits upload capacity of programs running in a given port range
+# limits are per port, i.e, each port will have its own limited connection
+# independent (independent as far as the kernel permits) from the other ports.
+#
+# needs root privileges!
+
 tc='sudo tc'
 PROTOCOL=0x11 #0x11 for UDP; 0x6 for TCP
 

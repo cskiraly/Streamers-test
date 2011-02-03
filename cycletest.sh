@@ -1,8 +1,13 @@
 #!/bin/bash
 
-# Copyright (c) 2010 Luca Abeni
 # Copyright (c) 2010 Csaba Kiraly
+# Copyright (c) 2010 Luca Abeni
 # This is free software; see gpl-3.0.txt
+
+# Run a whole set of experimets cycling thourh variuos parameter values,
+# and gather statistics.
+
+# see cycletest.config.exampe, for configuration parameters and examples!
 
 usage()
 {
