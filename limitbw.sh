@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Copyright (c) 2010 Luca Abeni
 # Copyright (c) 2010 Csaba Kiraly
 # This is free software; see gpl-3.0.txt
 
