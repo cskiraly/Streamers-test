@@ -18,6 +18,8 @@ CPSs="25"		#chunks/sec, offers/sec, or number of offerthreads, depending on the 
 CHBUFs="32"		#chunk buffer size, defined in [chunks] in current streamers
 REORDBUFs='$CHBUF'	#size of the reordering buffer, defined in [chunks] in current streamers
 BINs="HRCcsaba_f"	#the version of the binary to use. is $binprefix$bin$binpostfix
+PEER_EXTRAPARAM="-t max_timestamp=1000000,bootstrap_period=500000,bootstrap_cycles=100,cache_size=50"
+SOURCE_EXTRAPARAM=$PEER_EXTRAPARAM
 
 #some generic parameters and pointes to supplementary scripts
 tc='sudo tc'
