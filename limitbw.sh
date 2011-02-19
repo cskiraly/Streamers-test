@@ -30,11 +30,14 @@ limitup()
   UP_SPEED=$2 #mbit/s
   UP_LOSS=$3 #%
   UP_DELAY=$4 #msec
+  QUEUE_TIME=${5:-1.0} #[sec] max queue time, calculated with 1500 byte packets
+
+  QUEUE_SIZE=`echo "$QUEUE_TIME * $UP_SPEED * 1000000 / 8 / 1500" | bc -l`
 
    # limit uplink
   HANDLE=$(($PORT))
   ${tc} class add dev $IFDEV parent 1:1 classid 1:$HANDLE htb rate ${UP_SPEED}mbit burst 15k || exit
-  ${tc} qdisc add dev $IFDEV parent 1:$HANDLE handle $HANDLE: netem loss ${UP_LOSS}% delay ${UP_DELAY}msec || exit
+  ${tc} qdisc add dev $IFDEV parent 1:$HANDLE handle $HANDLE: netem loss ${UP_LOSS}% delay ${UP_DELAY}msec limit ${QUEUE_SIZE} || exit
   ${tc} filter add dev $IFDEV protocol ip parent 1:0 prio 1 u32 \
     match ip protocol $PROTOCOL 0xff \
     match ip sport $PORT 0xffff \
