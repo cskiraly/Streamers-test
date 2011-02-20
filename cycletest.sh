@@ -67,9 +67,11 @@ for BIN in `eval echo $BINs`; do
   $TESTSH -v $VIDEO -I $IFDEV -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0 $PEER_EXTRAPARAM" -s "-M 0 -n stun_server=0 $SOURCE_EXTRAPARAM" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM1 >a &
   PIDS="$!"
 
-  $LIMITBW peers $IFDEV $((6667+$PEERNUM1)) $((6667+$PEERNUM1+$PEERNUM2-1)) $UPRATE2 0 $DELAY
-  $TESTSH -I $IFDEV -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0 $PEER_EXTRAPARAM" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM2 -P $((6667+$PEERNUM1)) -Z >a &
-  PIDS+=" $!"
+  if [ $PEERNUM2 -ge 1 ]; then 
+    $LIMITBW peers $IFDEV $((6667+$PEERNUM1)) $((6667+$PEERNUM1+$PEERNUM2-1)) $UPRATE2 0 $DELAY
+    $TESTSH -I $IFDEV -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0 $PEER_EXTRAPARAM" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM2 -P $((6667+$PEERNUM1)) -Z >a &
+    PIDS+=" $!"
+  fi
 
   sleep $DURATION
   kill $PIDS
