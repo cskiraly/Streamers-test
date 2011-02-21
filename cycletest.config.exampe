@@ -14,6 +14,7 @@ UPRATEs="0.6 1" 	#uplink capacity [mbit/s]
 UPRATE1s='$UPRATE \* $PEERNUM \* $UPRATEPART1 / $PEERNUM1 | bc -l'	#uplink capacity of individual peers in group 1 [mbit/s]
 UPRATE2s='$UPRATE \* $PEERNUM \* \( 1 - $UPRATEPART1 \) / $PEERNUM2 | bc -l'	#same for group 2 [mbit/s]
 DELAYs="20 35"		#end-to-end dalay added at the IP level. Note that this is additional to any queuing delay due to rate limits! [msec]
+SRCCOPIESs="1"		#number of copies the source sends out from every chunk
 CPSs="25"		#chunks/sec, offers/sec, or number of offerthreads, depending on the implementation used. It is the -c parameter of the streamer
 CHBUFs="32"		#chunk buffer size, defined in [chunks] in current streamers
 REORDBUFs='$CHBUF'	#size of the reordering buffer, defined in [chunks] in current streamers

@@ -44,16 +44,19 @@ for UPRATEPART1  in `eval echo $UPRATEPART1s` ; do
 for UPRATE1 in `eval echo $UPRATE1s`; do
 for UPRATE2 in `eval echo $UPRATE2s`; do
 for DELAY in `eval echo $DELAYs`; do
+for SRCCOPIES in `eval echo $SRCCOPIESs`; do
 for CPS in `eval echo $CPSs`; do
 for BIN in `eval echo $BINs`; do
 
   SCENARIO_HDR="protocol,peers,uprateavg,upratepart1"\
 ",peers1,neighsize1,uprate1,updelay1,uploss1"\
 ",peers2,neighsize2,uprate2,updelay2,uploss2"\
+",srccopies"\
 ",offerthreads,chbuf,reordbuf,cycle"
   export SCENARIO="$BIN,$PEERNUM,$UPRATE,$UPRATEPART1"\
 ",$PEERNUM1,$NEIGH,$UPRATE1,$DELAY,0"\
 ",$PEERNUM2,$NEIGH,$UPRATE2,$DELAY,0"\
+",$SRCCOPIES"\
 ",$CPS,$CHBUF,$REORDBUF,$CYCLE"
   CSV=published.${SCENARIO/,/_}.csv
 
@@ -64,7 +67,7 @@ for BIN in `eval echo $BINs`; do
   $LIMITBW init $IFDEV
 
   $LIMITBW peers $IFDEV 6667 $((6667+$PEERNUM1-1)) $UPRATE1 0 $DELAY
-  $TESTSH -v $VIDEO -I $IFDEV -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0 $PEER_EXTRAPARAM" -s "-M 0 -n stun_server=0 $SOURCE_EXTRAPARAM" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM1 >a &
+  $TESTSH -v $VIDEO -I $IFDEV -f abouttopub -p "--measure_start $MEASURE_START --measure_every $MEASURE_EVERY -c $CPS -b $CHBUF -o $REORDBUF -M $NEIGH -n stun_server=0 $PEER_EXTRAPARAM" -s "-M 0 -n stun_server=0 -m $SRCCOPIES $SOURCE_EXTRAPARAM" -X 0 -e ${BINPREFIX}${BIN}${BINPOSTFIX} -N $PEERNUM1 >a &
   PIDS="$!"
 
   if [ $PEERNUM2 -ge 1 ]; then 
@@ -90,6 +93,7 @@ for BIN in `eval echo $BINs`; do
 
   fi
 
+done
 done
 done
 done
