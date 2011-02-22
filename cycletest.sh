@@ -63,6 +63,8 @@ for BIN in `eval echo $BINs`; do
   echo "running $SCENARIO"
 
   if [ ! -e $CSV ] ; then
+  mpstat 5 | tee cpu.${SCENARIO/,/_}.txt &
+  MPSTAT_PID="$!"
 
   $LIMITBW init $IFDEV
 
@@ -89,6 +91,7 @@ for BIN in `eval echo $BINs`; do
     awk '/aboutto/ { print $0",2,"ENVIRON["SCENARIO"] }' stderr.$PORT >>$CSV
   done;
 
+  kill $MPSTAT_PID
   rm -f stderr.[0-9]*
 
   fi
