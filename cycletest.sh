@@ -29,6 +29,7 @@ bashkilltrap()
 }
 trap bashkilltrap 0
 
+WAIT=${WAIT:-30}
 
 rm -f stderr.[0-9]*
 
@@ -81,7 +82,7 @@ for BIN in `eval echo $BINs`; do
   sleep $DURATION
   kill $PIDS
   $LIMITBW end $IFDEV
-  sleep 30
+  sleep $WAIT
 
   echo -e "#dummy,src,from,to,measure,value,stringval,channel,time,peergrp,$SCENARIO_HDR\n" >$CSV
   for PORT in `seq 6667 $((6667+$PEERNUM1-1))`; do
