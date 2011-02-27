@@ -1,6 +1,6 @@
 DURATION=90		#the duration of each run [seconds]
 MEASURE_START=0		#start to gether statistics after this time [seconds]
-MEASURE_EVERY=5		#write out and clear statistics every [seconds]
+MEASURE_EVERY=5		#write out and clear statistics every [seconds]. Set to some large value to have it only at the end.
 WAIT=30			#sleep between cycles [seconds]
 
 BINPREFIX="`pwd`/offerstreamer-ffmpeg-static-"	#prefix for different binaries
