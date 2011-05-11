@@ -224,7 +224,7 @@ if [[ $NO_SOURCE ]]; then
    sleep 366d &
    SPID=$!
 else 
-   $STREAMER $SOURCE_OPTIONS -l -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$SOURCE_FILTER" $FIFO &
+   $STREAMER $SOURCE_OPTIONS -f $VIDEO -I $IFACE -P $SOURCE_PORT 2>$FIFO >/dev/null | grep "$SOURCE_FILTER" $FIFO &
    SPID=$!
 fi
 sleep $STARTUP_WAIT
