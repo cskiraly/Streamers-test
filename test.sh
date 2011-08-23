@@ -97,47 +97,35 @@ STARTUP_WAIT=0
 #process options
 while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:c:t:T:w:g:zW:" opt; do
   case $opt in
-    I)
-      IFACE=$OPTARG
-      ;;
-    s)
-      SOURCE_OPTIONS=$OPTARG
-      ;;
-    i)
-      SOURCE_IP=$OPTARG
-      ;;
-    S)
-      SOURCE_PORT=$OPTARG
-      ;;
-    p)
-      PEER_OPTIONS=$OPTARG
-      ;;
-    P)
-      PEER_PORT_BASE=$OPTARG
-      ;;
-    N)
-      NUM_PEERS=$OPTARG
-      ;;
-    f)
-      FILTER=$OPTARG
+    C)
+      NUM_PEERS_C=$OPTARG
       ;;
     F)
       SOURCE_FILTER=$OPTARG
       ;;
-    e)
-      STREAMER=$OPTARG
+    I)
+      IFACE=$OPTARG
       ;;
-    v)
-      VIDEO=$OPTARG
-      ;;
-    V)
-      NUM_PEERS_V=$OPTARG
+    N)
+      NUM_PEERS=$OPTARG
       ;;
     O)
       NUM_PEERS_O=$OPTARG
       ;;
-    o)
-      OUTPUT=$OPTARG
+    P)
+      PEER_PORT_BASE=$OPTARG
+      ;;
+    S)
+      SOURCE_PORT=$OPTARG
+      ;;
+    T)
+      CHURN_MAX=$OPTARG
+      ;;
+    V)
+      NUM_PEERS_V=$OPTARG
+      ;;
+    W)
+      STARTUP_WAIT=$OPTARG
       ;;
     X)
       NUM_PEERS_X=$OPTARG
@@ -145,26 +133,38 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:c:t:T:w:g:zW:" opt; do
     Z)
       NO_SOURCE=1
       ;;
-    C)
-      NUM_PEERS_C=$OPTARG
-      ;;
     c)
       CHURN_PORT_INCR=$OPTARG
       ;;
-    t)
-      CHURN_MIN=$OPTARG
+    e)
+      STREAMER=$OPTARG
       ;;
-    T)
-      CHURN_MAX=$OPTARG
-      ;;
-    w)
-      CHURN_WAIT=$OPTARG
+    f)
+      FILTER=$OPTARG
       ;;
     g)
       GPERF_WAIT=$OPTARG
       ;;
-    W)
-      STARTUP_WAIT=$OPTARG
+    i)
+      SOURCE_IP=$OPTARG
+      ;;
+    o)
+      OUTPUT=$OPTARG
+      ;;
+    p)
+      PEER_OPTIONS=$OPTARG
+      ;;
+    s)
+      SOURCE_OPTIONS=$OPTARG
+      ;;
+    t)
+      CHURN_MIN=$OPTARG
+      ;;
+    v)
+      VIDEO=$OPTARG
+      ;;
+    w)
+      CHURN_WAIT=$OPTARG
       ;;
     z)
       CAT="gzip"
