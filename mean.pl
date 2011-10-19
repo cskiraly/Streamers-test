@@ -6,6 +6,9 @@ if ($#ARGV+1 != 1) {
   exit 1;
 }
 
+my $sep_pattern = ",";
+my $sep = ",";
+
 my $meancolumn = $ARGV[0];
 
 my $colcount;
@@ -14,7 +17,7 @@ my %cnt = ();
 while( my $line = <STDIN> ){
   chomp($line);
   if ($line !~ /^\s*#/) {
-    my @fields = split(/\,/,$line);
+    my @fields = split(/$sep_pattern/,$line);
     if (scalar(@fields) < $meancolumn) { next;}
 
     if (! defined($colcount)) {
@@ -26,30 +29,20 @@ while( my $line = <STDIN> ){
       }
     }
 
-    my $prefix = join(',',@fields[0..$meancolumn-1]);
-    my $postfix = join(',',@fields[($meancolumn+1) .. (scalar(@fields)-1)]);
+    my $others = join($sep, @fields[0..$meancolumn-1], @fields[($meancolumn+1)..(scalar(@fields)-1)]);
 
-    if (!defined($sums{$prefix})) {
-      $sums{$prefix} = {};
-      $cnt{$prefix} = {};
-    }
-    if (!defined($sums{$prefix}{$postfix})) {
-      $sums{$prefix}{$postfix} = 0;
-      $cnt{$prefix}{$postfix} = 0;
-    }
-    $sums{$prefix}{$postfix} += @fields[$meancolumn];
-    $cnt{$prefix}{$postfix}++;
+print "others: $others\n";
+
+    $sums{$others} += @fields[$meancolumn];
+    $cnt{$others}++;
   } else {
     print "$line\n"; # to preserve the header
   }
 }
 
-foreach my $prefix (keys %sums) {
-  my $hash_ref = $sums{$prefix};
-  my %hash = %$hash_ref;
-  foreach my $postfix (keys %hash) {
-     print "$prefix,".$sums{$prefix}{$postfix}/$cnt{$prefix}{$postfix}.",$postfix\n";
-  }
+foreach my $others (keys %sums) {
+  my @fields = split(/$sep_pattern/,$others);
+  print join($sep,@fields[0..$meancolumn-1], $sums{$others}/$cnt{$others}, @fields[($meancolumn) .. (scalar(@fields)-1)])."\n";
 }
 
 close MYDATA;
