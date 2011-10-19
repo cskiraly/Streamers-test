@@ -6,6 +6,9 @@ if ($#ARGV+1 != 1) {
   exit 1;
 }
 
+my $sep_pattern = ",";
+my $sep = ",";
+
 my $meancolumn = $ARGV[0];
 
 my $colcount;
@@ -14,7 +17,7 @@ my %cnt = ();
 while( my $line = <STDIN> ){
   chomp($line);
   if ($line !~ /^\s*#/) {
-    my @fields = split(/\,/,$line);
+    my @fields = split(/$sep_pattern/,$line);
     if (scalar(@fields) < $meancolumn) { next;}
 
     if (! defined($colcount)) {
@@ -26,10 +29,10 @@ while( my $line = <STDIN> ){
       }
     }
 
-    my $prefix = join(',',@fields[0..$meancolumn-1]);
-    my $postfix = join(',',@fields[($meancolumn+1) .. (scalar(@fields)-1)]);
+    my $prefix = join($sep,@fields[0..$meancolumn-1]);
+    my $postfix = join($sep,@fields[($meancolumn+1) .. (scalar(@fields)-1)]);
 
-    print "$prefix,,$postfix\n";
+    print "$prefix$sep$sep$postfix\n";
 
   } else {
     print "$line\n"; # to preserve the header
