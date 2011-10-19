@@ -1,0 +1,146 @@
+.TH test.sh 1  "September 29, 2011" "version 0.1" "USER COMMANDS"
+.SH NAME
+test.sh \- Test utility for PeerStreamer
+.SH SYNOPSYS
+.SY test.sh 
+.OP \-hZz 
+.OP \-e executable
+.OP \-m executable
+.OP \-v video
+.OP \-I interface
+.OP \-S port
+.OP \-F filter
+.OP \-s options
+.OP \-i IP
+.OP \-P port
+.OP \-p options
+.OP \-o output
+.OP \-f filter
+.OP \-N clients
+.OP \-O clients
+.OP \-M clients
+.OP \-X clients
+.OP \-C clients
+.OP \-V clients
+.OP \-g seconds
+.OP \-t seconds
+.OP \-T seconds
+.OP \-w seconds
+.OP \-c units
+.OP \-W seconds
+.YS
+.SH DESCRIPTION
+test.sh is a simple script that starts a source and some peers on the local \
+machine. The total number of running peers is given by the arguments of the options \
+M, N, O, X, C, anv V (see below).
+.SH OPTIONS
+.TP
+\-h
+print this help and exit
+.TP
+\-e executable
+streamer executable, e.g. -e ./offerstreamer-ml-monl. Current: $STREAMER
+.TP
+\-I interface
+the interface to use for all peers and the source, e.g. -I eth1. Current: $IFACE
+.TP
+\-m executable
+another client executable (in case of test of multiple clients)
+.TP
+\-M clients
+number of alternative clients
+.TP
+\-S port
+the udp port used by the source. Current: $SOURCE_PORT
+.TP
+\-v video
+stream video file, e.g. -v ~/video/big_buck_bunny_480p_600k.mpg. Current: $VIDEO
+.TP
+\-F filter 
+filter output of source grepping for the argument e.g. -F "sending\|received". \
+Current: $SOURCE_FILTER
+.TP
+\-Z
+don't start the source. Use this mode to attach these peers to an exisiting \
+source. Current: $NO_SOURCE
+.TP
+\-s options
+extra options to pass to the source, .e.g. -s "-m 3". Current: $SOURCE_OPTIONS
+.TP
+\-i IP
+IP address of the source to connect to. Might be needed if -I!=lo. Current: \
+$SOURCE_IP
+.TP
+\-P clients
+peers use ports starting from this one. Current: $PEER_PORT_BASE
+.TP
+\-p options
+extra options passed to each peer, e.g. -p "-c 50 -b 100". Current: $PEER_OPTIONS
+.TP
+\-N clients
+number of peers running in background (only stderr is logged). Use '-N 0' to \
+disable. Current: $NUM_PEERS
+.TP
+\-O clients
+number of peers showing their ouput (on stdout). Current: $NUM_PEERS_O
+.TP
+\-o output
+override output program, e.g. -o "fifo | vlc /dev/stdin". Current: $OUTPUT
+.TP
+\-f filter
+filter output of X peers grepping for the argument, e.g. -f "chbuf". Current: \
+$FILTER
+.TP
+\-X clients
+number of peers showing stderr in an xterm. If -f is specified, filter is \
+applied. Current: $NUM_PEERS_X
+.TP
+\-C clients
+number of peers runnung in background and churning. Current: $NUM_PEERS_C
+.TP
+\-V clients
+number of peers running valgrind. Current: $NUM_PEERS_V
+.TP
+\-g seconds
+gperf: seconds to wait before killing peers and generating gperf data. \
+Streamer must be compiled with -pg! Current: $GPERF_WAIT
+.TP
+\-z
+gzip: compress each log file with gzip on-the-fly
+.TP
+\-t seconds
+minimum lifetime in seconds of peers (only for C type). Current: $CHURN_MIN
+.TP
+\-T seconds
+maximum lifetime in seconds of peers (only for C type). Current: $CHURN_MAX
+.TP
+\-w seconds
+seconds to wait before restarting peer. Current: $CHURN_WAIT
+.TP
+\-c units	
+after churn, increase port number by this amount. Default: number of C type \
+peers. Set to 0 to have peers that resurrect with the same address.
+.TP
+\-W seconds 
+wait W seconds between starting peers
+.SH EXAMPLES
+.TP
+Start a swarm with all default params, and pring chbuf messages only:
+.B ./test.sh 
+\-e "offerstreamer-ml" \-f "chbuf"
+.TP
+Start the source with optional parameter -m 1, 5 peers with parameters \
+"-b 40 -o 5 -c 25" and print only chbuf messages:
+.B ./test.sh
+\-e "offerstreamer-ml-monl-static" 
+\-s "-m 1" \-N 5 \-p "-b 40 -o 5 -c 25" \-f "chbuf"
+.SH AUTHORS
+This program was originally written by Csaba Kiraly (kiraly@disi.unitn.it) and \
+Luca Abeni (abeni@disi.unitn.it). The man page has been written by Gianluca \
+Ciccarelli (ciccarelli@disi.unitn.it) and is based on the program's online help.
+.SH COPYRIGHT
+Copyright © 2011 Csaba Kiraly and Luca Abeni, License GPLv3: GNU GPL \
+version 3 <http://gnu.org/licenses/gpl.html>. This  is  free software: you are \
+free to change and redistribute it. There is NO WARRANTY, to the extent permitted \
+by law.
+
