@@ -96,6 +96,8 @@ CAT="cat"
 CATEXT=
 STARTUP_WAIT=0
 
+[[ $# == 0 ]] && print_usage && exit 1
+
 #process options
 while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:c:t:T:w:g:zW:h" opt; do
   case $opt in
