@@ -66,7 +66,9 @@ It accept the following options:
     TIMING OPTIONS
     W: # wait W seconds between starting peers
 
-    
+    OTHER OPTIONS
+    h:	# print (this) help and exit
+
 Examples:
 
 Start a swarm with all default params, and pring chbuf messages only.
@@ -95,7 +97,7 @@ CATEXT=
 STARTUP_WAIT=0
 
 #process options
-while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:c:t:T:w:g:zW:" opt; do
+while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:c:t:T:w:g:zW:h" opt; do
   case $opt in
     C)
       NUM_PEERS_C=$OPTARG
@@ -169,6 +171,10 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:c:t:T:w:g:zW:" opt; do
     z)
       CAT="gzip"
       CATEXT=".gz"
+      ;;
+    h)
+      print_usage
+      exit 0
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
