@@ -87,7 +87,7 @@ PEER_PORT_BASE=6667
 NUM_PEERS=1
 FILTER=""
 SOURCE_FILTER=""
-STREAMER=offerstreamer-ml-monl
+STREAMER=
 VIDEO=foreman_cif.mpg
 OUTPUT="fifo | ffplay -"
 CHURN_MIN=30
@@ -190,6 +190,8 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:c:t:T:w:g:zW:h" opt; do
       ;;
   esac
 done
+
+[[ -x "$STREAMER" ]] || { echo "Streamer executable (-e) option is manadatory" >&2 ; exit 1; }
 
 [[ $GPERF_WAIT ]] && export GMON_OUT_PREFIX="gmon.out"
 
