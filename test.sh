@@ -19,7 +19,8 @@ bashkilltrap()
     gprof $STREAMER gmon.out.* > gprof.all
   fi
 
-  ps -o pid= --ppid $$ | xargs kill 2>/dev/null
+  PROCs=`ps -o pid= --ppid $$`
+  echo PROCs | $xargs kill 2>/dev/null
 }
 trap bashkilltrap 0
 
