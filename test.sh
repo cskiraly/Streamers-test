@@ -191,7 +191,8 @@ while getopts "s:S:p:P:N:f:F:e:v:V:X:i:I:o:O:ZC:c:t:T:w:g:zW:h" opt; do
   esac
 done
 
-[[ -x "$STREAMER" ]] || { echo "Streamer executable (-e) option is manadatory" >&2 ; exit 1; }
+[[ -n "$STREAMER" ]] || { echo "Streamer executable (-e) option is manadatory" >&2 ; exit 1; }
+[[ -x "$STREAMER" ]] || { echo "Cannot execute streamer executable $STREAMER" >&2 ; exit 1; }
 
 [[ $GPERF_WAIT ]] && export GMON_OUT_PREFIX="gmon.out"
 
